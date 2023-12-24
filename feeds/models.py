@@ -32,7 +32,7 @@ class Source(models.Model):
     description   = models.TextField(null=True, blank=True)
 
     last_polled   = models.DateTimeField(blank=True, null=True)
-    due_poll      = models.DateTimeField(default=datetime.datetime(1900, 1, 1)) # default to distant past to put new sources to front of queue
+    due_poll      = models.DateTimeField(default=django_utils.timezone.datetime(1900, 1, 1, tzinfo=datetime.timezone.utc))  # default to distant past to put new sources to front of queue
     etag          = models.CharField(max_length=255, blank=True, null=True)
     last_modified = models.CharField(max_length=255, blank=True, null=True) # just pass this back and forward between server and me , no need to parse
     
