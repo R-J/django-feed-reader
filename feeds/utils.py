@@ -5,6 +5,7 @@ from django.conf import settings
 from feeds.models import Source, Enclosure, Post, WebProxy
 
 import feedparser as parser
+import listparser
 
 import time
 import datetime
@@ -979,3 +980,15 @@ def find_proxies(out=NullOutput()):
             WebProxy(address="X").save()
         out.write("No proxies found.\n")
     
+def import_opml(opml_data: str):
+    try:
+        opml = listparser.parse(opml_data)
+    except Exception as ex:
+        logging.error("Error parsing OPML data")
+    for feed in opml.feeds:
+        logging.debug(f"Processing {feed.url}")
+        source, created = Source.objects.get_or_create(feed_url=feed.url, defaults={"name": feed.title})
+        if created==False:
+            source.name = feed.title
+            source.feed_url = feed.url
+            source.save()

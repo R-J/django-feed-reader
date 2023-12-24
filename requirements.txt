@@ -4,3 +4,4 @@ feedparser
 BeautifulSoup4
 requests
 pyrfc3339
+listparser
