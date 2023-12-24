@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.timezone import utc
 
 import time
 import datetime
@@ -79,7 +78,7 @@ class Source(models.Model):
         elif self.last_change is None or self.last_success is None:
             css = "background-color:#D00;color:white"
         else:
-            dd = datetime.datetime.utcnow().replace(tzinfo=utc) - self.last_change
+            dd = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc) - self.last_change
             
             days = int (dd.days / 2)
             
@@ -101,8 +100,8 @@ class Source(models.Model):
         elif self.last_change == None or self.last_success == None:
             css="#F00;"
         else:
-            dd = datetime.datetime.utcnow().replace(tzinfo=utc) - self.last_change
-            
+            dd = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc) - self.last_change
+
             days = int (dd.days/2)
             
             red = days
