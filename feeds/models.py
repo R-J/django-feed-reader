@@ -21,6 +21,24 @@ class ExpiresGenerator(object):
         return django_utils.timezone.now() - datetime.timedelta(days=1)
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    @property
+    def unread_posts_count(self):
+        """
+        Dynamically calculate the count of unread posts for the category.
+        """
+        return Source.objects.filter(category=self).aggregate(
+            unread_count=models.Count('posts', filter=models.Q(posts__read=False))
+        )['unread_count']
+
 
 class Source(models.Model):
     # This is an actual feed that we poll
@@ -51,8 +69,8 @@ class Source(models.Model):
     
     is_cloudflare  = models.BooleanField(default=False)
 
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='sources', null=True, blank=True)
 
-    
     def __str__(self):
         return self.display_name
 
