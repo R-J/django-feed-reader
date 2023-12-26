@@ -51,6 +51,7 @@ class EnclosureAdmin(admin.ModelAdmin):
 
     list_display = ('href', 'type')
 
+admin.site.register(models.Tag)
 admin.site.register(models.Category)
 admin.site.register(models.Source, SourceAdmin)
 admin.site.register(models.Post, PostAdmin)

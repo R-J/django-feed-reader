@@ -21,6 +21,13 @@ class ExpiresGenerator(object):
         return django_utils.timezone.now() - datetime.timedelta(days=1)
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
@@ -70,6 +77,8 @@ class Source(models.Model):
     is_cloudflare  = models.BooleanField(default=False)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='sources', null=True, blank=True)
+    tags = models.ManyToManyField(Tag, related_name='source_tags', blank=True)
+
 
     def __str__(self):
         return self.display_name
@@ -159,6 +168,7 @@ class Post(models.Model):
     image_url     = models.CharField(max_length=512, blank=True,null=True)
     read          = models.BooleanField(default=False)
     starred       = models.BooleanField(default=False)
+    tags          = models.ManyToManyField(Tag, related_name='post_tags', blank=True)
 
     def mark_read(self):
         """
@@ -207,6 +217,7 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["index"]
+
 
 class Enclosure(models.Model):
 
