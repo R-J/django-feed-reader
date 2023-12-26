@@ -131,7 +131,29 @@ class Post(models.Model):
     author        = models.CharField(max_length=255, blank=True, null=True)
     index         = models.IntegerField(db_index=True)
     image_url     = models.CharField(max_length=512, blank=True,null=True)
+    read          = models.BooleanField(default=False)
+    starred       = models.BooleanField(default=False)
 
+    def mark_read(self):
+        """
+        Marks the post as read.
+        """
+        self.read = True
+        self.save(update_fields=['read'])
+
+    def unmark_read(self):
+        """
+        Marks the post as unread.
+        """
+        self.read = False
+        self.save(update_fields=['read'])
+
+    def toggle_starred(self):
+        """
+        Toggles the starred status of the post.
+        """
+        self.starred = not self.starred
+        self.save(update_fields=['starred'])
 
     @property
     def title_url_encoded(self):
@@ -159,7 +181,7 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["index"]
-        
+
 class Enclosure(models.Model):
 
     post   = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='enclosures')
