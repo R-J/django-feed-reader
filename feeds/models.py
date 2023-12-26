@@ -51,10 +51,18 @@ class Source(models.Model):
     
     is_cloudflare  = models.BooleanField(default=False)
 
+
     
     def __str__(self):
         return self.display_name
-    
+
+    @property
+    def unread_posts_count(self):
+        """
+        Dynamically calculate the count of unread posts for the source.
+        """
+        return self.posts.filter(read=False).count()
+
     @property
     def best_link(self):
         #the html link else hte feed link
